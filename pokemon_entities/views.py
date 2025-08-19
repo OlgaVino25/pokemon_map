@@ -67,12 +67,11 @@ def show_all_pokemons(request):
 def show_pokemon(request, pokemon_id):
     pokemon = get_object_or_404(Pokemon, id=pokemon_id)
     now = timezone.localtime()
-    active_entities = pokemon.entities.filter(
+    active_entities = PokemonEntity.objects.filter(
         appeared_at__lte=now,
         disappeared_at__gte=now
     )
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    entities = PokemonEntity.objects.select_related('subject').all()
 
     for entity in active_entities:
         image_url = (
@@ -86,6 +85,10 @@ def show_pokemon(request, pokemon_id):
         'map': folium_map._repr_html_(),
         'pokemon': {
             'pokemon_id': pokemon.id,
+            'title_ru': pokemon.title_ru,
+            'title_en': pokemon.title_en,
+            'title_jp': pokemon.title_jp,
+            'description': pokemon.description,
             'img_url': request.build_absolute_uri(pokemon.image.url) if pokemon.image else None,
         }
     }
