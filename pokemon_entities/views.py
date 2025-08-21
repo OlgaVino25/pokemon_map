@@ -30,13 +30,13 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
 
 def show_all_pokemons(request):
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    pokemon_entities = PokemonEntity.objects.select_related('subject').filter(
+    pokemon_entities = PokemonEntity.objects.select_related('pokemon_model').filter(
         appeared_at__lte=now,
         disappeared_at__gte=now
     )
     for entity in pokemon_entities:
-        if entity.subject.image:
-            img_url = request.build_absolute_uri(entity.subject.image.url)
+        if entity.pokemon_model.image:
+            img_url = request.build_absolute_uri(entity.pokemon_model.image.url)
         else:
             img_url = DEFAULT_IMAGE_URL
 
@@ -67,7 +67,7 @@ def show_pokemon(request, pokemon_id):
     now = timezone.localtime()
     
     active_entities = PokemonEntity.objects.filter(
-        subject=pokemon,
+        pokemon_model=pokemon,
         appeared_at__lte=now,
         disappeared_at__gte=now
     )
