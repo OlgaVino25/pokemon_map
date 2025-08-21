@@ -1,7 +1,5 @@
 import folium
-import json
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseNotFound
 from django.shortcuts import render
 
 from .models import Pokemon, PokemonEntity
@@ -84,7 +82,7 @@ def show_pokemon(request, pokemon_id):
     if pokemon.previous_evolution:
         previous_evolution = {
             'pokemon_id': pokemon.previous_evolution.id,
-            'title_ru': pokemon.previous_evolution.title_ru,
+            'title_ru': pokemon.previous_evolution.title,
             'img_url': request.build_absolute_uri(pokemon.previous_evolution.image.url) 
             if pokemon.previous_evolution.image else None
         }
@@ -94,14 +92,14 @@ def show_pokemon(request, pokemon_id):
     if next_evo:
         next_evolution = {
             'pokemon_id': next_evo.id,
-            'title_ru': next_evo.title_ru,
+            'title_ru': next_evo.title,
             'img_url': request.build_absolute_uri(next_evo.image.url) 
             if next_evo.image else None
         }
 
     pokemon_data = {
         'pokemon_id': pokemon.id,
-        'title_ru': pokemon.title_ru,
+        'title_ru': pokemon.title,
         'title_en': pokemon.title_en,
         'title_jp': pokemon.title_jp,
         'description': pokemon.description,
