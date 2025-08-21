@@ -62,6 +62,15 @@ def show_all_pokemons(request):
     })
 
 
+def get_pokemon_data(pokemon, request):
+    """Возвращает словарь с данными покемона для отображения"""
+    return {
+        'pokemon_id': pokemon.id,
+        'title_ru': pokemon.title,
+        'img_url': request.build_absolute_uri(pokemon.image.url) if pokemon.image else None
+    }
+
+
 def show_pokemon(request, pokemon_id):
     pokemon = get_object_or_404(Pokemon, id=pokemon_id)
     now = timezone.localtime()
@@ -80,22 +89,12 @@ def show_pokemon(request, pokemon_id):
 
     previous_evolution = None
     if pokemon.previous_evolution:
-        previous_evolution = {
-            'pokemon_id': pokemon.previous_evolution.id,
-            'title_ru': pokemon.previous_evolution.title,
-            'img_url': request.build_absolute_uri(pokemon.previous_evolution.image.url) 
-            if pokemon.previous_evolution.image else None
-        }
+        previous_evolution = get_pokemon_data(pokemon.previous_evolution, request)
 
     next_evolution = None
     next_evo = pokemon.next_evolutions.first()
     if next_evo:
-        next_evolution = {
-            'pokemon_id': next_evo.id,
-            'title_ru': next_evo.title,
-            'img_url': request.build_absolute_uri(next_evo.image.url) 
-            if next_evo.image else None
-        }
+        next_evolution = get_pokemon_data(next_evo, request)
 
     pokemon_data = {
         'pokemon_id': pokemon.id,
